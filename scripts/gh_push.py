@@ -99,11 +99,10 @@ def main() -> int:
         print("  [info] tag exists; forcing.")
 
     br = branch_name(cwd)
+    # ensure remote exists before first push
+    run(["git", "remote", "add", "origin", remote], cwd=cwd, check=False)
     # 4. push (T1/T2 share this; T3 falls back here on failure)
     try:
-        run(["git", "push", "-u", "origin", br, "--follow-tags"], cwd=cwd)
-        # set upstream alias if absent
-        run(["git", "remote", "add", "origin", remote], cwd=cwd, check=False)
         run(["git", "push", "-u", "origin", br, "--follow-tags"], cwd=cwd)
     except subprocess.CalledProcessError:
         # T3: push failed — keep local, instruct
