@@ -19,6 +19,7 @@ Design rules followed:
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -49,6 +50,33 @@ def branch_name(cwd: Path) -> str:
     return (p.stdout or "master").strip() or "master"
 
 
+def apply_proxy(cwd: Path) -> None:
+    """Resolve an egress proxy that actually reaches GitHub.
+
+    `gh` often carries its own working proxy (e.g. 127.0.0.1:7890) while the
+    ambient http(s)_proxy env var points at a tunnel that 502s GitHub CONNECT.
+    Prefer gh's proxy for git so `git push` does not fail with
+    "CONNECT tunnel failed, response 502".
+    """
+    proxy = ""
+    try:
+        p = subprocess.run(
+            ["gh", "config", "get", "http_proxy"],
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+        )
+        proxy = (p.stdout or "").strip()
+    except Exception:
+        proxy = ""
+    if not proxy:
+        proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy") or ""
+    if proxy:
+        run(["git", "config", "http.proxy", proxy], cwd=cwd, check=False)
+        run(["git", "config", "https.proxy", proxy], cwd=cwd, check=False)
+        print(f"  [info] git proxy -> {proxy}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", required=True, help="remote repo name (under GH_USER)")
@@ -60,6 +88,9 @@ def main() -> int:
 
     cwd = Path(args.local).resolve()
     remote = f"https://github.com/{GH_USER}/{args.repo}.git"
+
+    # 0b. egress proxy (gh's working proxy, not the broken ambient tunnel)
+    apply_proxy(cwd)
 
     # 0. git hygiene
     run(["git", "config", "user.name", AUTHOR_NAME], cwd=cwd)
@@ -103,7 +134,9 @@ def main() -> int:
     run(["git", "remote", "add", "origin", remote], cwd=cwd, check=False)
     # 4. push (T1/T2 share this; T3 falls back here on failure)
     try:
-        run(["git", "push", "-u", "origin", br, "--follow-tags"], cwd=cwd)
+        run(["git", "push", "-u", "origin", br], cwd=cwd)
+        # lightweight tags are not always carried by --follow-tags; push explicitly
+        run(["git", "push", "origin", args.tag], cwd=cwd, check=False)
     except subprocess.CalledProcessError:
         # T3: push failed — keep local, instruct
         print("\n[T3] PUSH FAILED. Local commit+tag preserved. Manual:")
