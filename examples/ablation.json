@@ -1,0 +1,32 @@
+{
+  "full": {
+    "mean": 0.8263500655959056,
+    "std": 0.3604969020178949,
+    "n": 24
+  },
+  "no_selection": {
+    "mean": 0.8447210031735489,
+    "std": 0.3627185612037091,
+    "n": 24
+  },
+  "mean_init": {
+    "mean": 0.9079342923756503,
+    "std": 0.30734695297352543,
+    "n": 24
+  },
+  "no_refine": {
+    "mean": 0.8185031884339207,
+    "std": 0.35688018600703936,
+    "n": 24
+  },
+  "no_shift": {
+    "mean": 0.8352595630309742,
+    "std": 0.36899792066976156,
+    "n": 24
+  },
+  "delta_no_selection_minus_full": 0.018370937577643298,
+  "delta_mean_init_minus_full": 0.08158422677974464,
+  "delta_no_refine_minus_full": -0.007846877161984955,
+  "delta_no_shift_minus_full": 0.008909497435068525,
+  "note": "positive delta => the ablated-away component helps (lower is better)"
+}

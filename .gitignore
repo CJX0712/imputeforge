@@ -1,0 +1,43 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Environments
+.venv/
+venv/
+env/
+envs/
+*.egg-info/
+build/
+dist/
+
+# Data / artifacts that are regenerated
+*.npz
+*.npy
+!examples/**/*.npy
+
+# Secrets — never commit
+.env
+*.pem
+*.key
+*token*.json
+*secret*
+secrets/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Scratch experiment scripts (offline evidence, not shipped code)
+_exp_*.py
+examples/_*.log

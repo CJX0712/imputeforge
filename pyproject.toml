@@ -1,0 +1,39 @@
+[project]
+name = "imputeforge"
+version = "0.1.0"
+description = "ImputeForge: EM-anchored MICE with per-column conditional-model selection and probe-calibrated MNAR correction"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "晨星" }]
+dependencies = [
+    "numpy==2.5.3",
+    "scipy==1.18.1",
+    "scikit-learn==1.9.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==9.1.1", "pytest-cov==7.0.0", "ruff==0.17.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::UserWarning", "ignore::FutureWarning", "ignore::RuntimeWarning"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+exclude = [".venv", "venv", "build", "dist", "_exp_fusion.py", "_exp_fusion2.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["SIM", "RUF"]
+"examples/*" = ["E402", "I001"]
+"cli.py" = ["E402"]
+
+[tool.coverage.run]
+source = ["imputeforge"]

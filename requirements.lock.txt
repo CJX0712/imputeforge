@@ -1,0 +1,15 @@
+# Exact lock of the environment every reported number was produced in.
+# Hand-written as installable `name==version` on purpose: `pip freeze` on this
+# machine embeds `file:///C:/Users/...` local paths, and a lock that cannot be
+# installed is not a lock.
+joblib==1.6.0
+numpy==2.5.3
+scikit-learn==1.9.1
+scipy==1.18.1
+threadpoolctl==3.7.0
+
+# dev / CI
+coverage==7.16.2
+pytest==9.1.1
+pytest-cov==7.0.0
+ruff==0.17.0

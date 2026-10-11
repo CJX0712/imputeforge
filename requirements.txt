@@ -1,0 +1,4 @@
+# Runtime dependencies (pinned — reproducibility is part of correctness)
+numpy==2.5.3
+scipy==1.18.1
+scikit-learn==1.9.1
